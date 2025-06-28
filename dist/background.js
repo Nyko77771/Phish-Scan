@@ -9,13 +9,13 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/background.js":
-/*!***************************!*\
-  !*** ./src/background.js ***!
-  \***************************/
+/***/ "./src/javascript/background.js":
+/*!**************************************!*\
+  !*** ./src/javascript/background.js ***!
+  \**************************************/
 /***/ (() => {
 
-eval("console.log(\"Hello World from Background.\");\n\n//# sourceURL=webpack://phishscan/./src/background.js?");
+eval("console.log(\"Hello World from Background.\");\n\n//# sourceURL=webpack://phishscan/./src/javascript/background.js?");
 
 /***/ })
 
@@ -26,7 +26,7 @@ eval("console.log(\"Hello World from Background.\");\n\n//# sourceURL=webpack://
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./src/background.js"]();
+/******/ 	__webpack_modules__["./src/javascript/background.js"]();
 /******/ 	
 /******/ })()
 ;
