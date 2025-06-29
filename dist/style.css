@@ -10,4 +10,10 @@ body {
     margin: 0;
 }
 
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 /*# sourceMappingURL=style.css.map*/
