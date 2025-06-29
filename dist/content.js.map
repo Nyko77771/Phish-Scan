@@ -1,0 +1,1 @@
+{"version":3,"file":"content.js","mappings":";;;;AAAA","sources":["webpack://phishscan/./src/javascript/content.js"],"sourcesContent":["console.log(\"Hello World from Content\")"],"names":[],"sourceRoot":""}

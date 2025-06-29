@@ -1,16 +1,16 @@
 const path = require("path");
 const copyPlugin = require("copy-webpack-plugin");
-const HtmlPlugin = require("html-webpack-plugin")
+const htmlPlugin = require("html-webpack-plugin")
 const cssLoader = require("mini-css-extract-plugin");
 
 
 module.exports = {
 entry:{
-    window: "./src/window/index.html",
     background: "./src/javascript/background.js",
     content: "./src/javascript/content.js",
     styling: "./src/style/style.css"
 },
+devtool: "cheap-module-source-map",
 module:{
     rules: [
         {
@@ -46,9 +46,10 @@ plugins: [
         { from: path.resolve("./src/assets/icon.png"), to: path.resolve("dist") }
       ]
     }),
-    new HtmlPlugin({
-        title: "ReactJS Boilerplate",
-        filename: "index.html"
+    new htmlPlugin({
+        template: "./src/popup/popup.html",
+        filename: "popup.html",
+        chunks: ["content", "styling"]
     }),
     new cssLoader({
         filename: "style.css"

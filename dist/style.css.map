@@ -1,0 +1,1 @@
+{"version":3,"file":"style.css","mappings":";;;;AACA;AACA;AACA;AACA;AACA;AACA;AACA","sources":["webpack://phishscan/./src/style/style.css"],"sourcesContent":["\nbody {\n    width: 250px;\n    height: 300px;\n    border: 2px solid #FF3513;\n    padding: 0;\n    margin: 0;\n}"],"names":[],"sourceRoot":""}
