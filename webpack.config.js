@@ -43,7 +43,10 @@ plugins: [
     new copyPlugin({
       patterns: [
         { from: path.resolve("./src/assets/manifest.json"), to: path.resolve("dist") },
-        { from: path.resolve("./src/assets/icon.png"), to: path.resolve("dist") }
+        { from: path.resolve("./src/assets/icon.png"), to: path.resolve("dist") },
+        { from: path.resolve("./src/assets/logo.png"), to: path.resolve("dist")
+
+        }
       ]
     }),
     new htmlPlugin({
