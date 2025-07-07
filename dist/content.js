@@ -1,8 +1,17 @@
 /******/ (() => { // webpackBootstrap
-/*!***********************************!*\
-  !*** ./src/javascript/content.js ***!
-  \***********************************/
-console.log("Hello World from Content");
+/*!************************!*\
+  !*** ./src/content.js ***!
+  \************************/
+var emailDetected = false;
+var currentUrl = window.location.href;
+if (currentUrl.includes("mail.google.com") || currentUrl.includes("outlook.office365.com") || currentUrl.includes("mail.yahoo.com")) {
+  console.log("EMail Detected.");
+  chrome.runtime.sendMessage({
+    from: "content",
+    action: "emailDetected"
+  });
+}
+function detectChange(url) {}
 /******/ })()
 ;
 //# sourceMappingURL=content.js.map

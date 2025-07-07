@@ -1,13 +1,21 @@
 /*!***********************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./src/style/style.css ***!
   \***********************************************************************/
-
 body {
-    width: 300px;
-    height: 250px;
-    padding: 0;
-    margin: 0;
-    border: 7px solid #FF3F38;
+  width: 300px;
+  height: 250px;
+  padding: 0;
+  margin: 0;
+  border: 7px solid #ff3f38;
+}
+
+/*
+    Style for the top level div
+*/
+
+#root {
+  background-color: #fff6cf;
+  height: 100%;
 }
 
 /*
@@ -15,11 +23,9 @@ body {
 */
 
 .mainContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    background-color: #FFF6CF;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 /*
@@ -27,22 +33,23 @@ body {
 */
 
 #section1 {
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    background-color: #FF3F38;
-    border-radius: 5px;
-    margin: 1px;
+  height: 2.5em;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  background-color: #ff3f38;
+  border-radius: 5px;
+  margin: 1px;
 }
 #section1 img {
-    size: 2px;
-    margin-right: 3px;
+  height: 1.8em;
+  padding-top: 5px;
+  margin-right: 3px;
 }
 #section1 h1 {
-    font-size: 1.2em;
-    padding-right: 25px;
-    margin-top: 10px;
+  font-size: 1.5em;
+  padding-right: 25px;
+  margin-top: 5px;
 }
 
 /*
@@ -50,11 +57,11 @@ body {
 */
 
 #section2 {
-    display: flex;
-    align-self: center;
-    border: 2px dotted black;
-    margin: 2px 0 2px 0;
-    width: 90%;
+  display: flex;
+  align-self: center;
+  border: 2px dotted black;
+  margin: 2px 0 2px 0;
+  width: 90%;
 }
 
 /*
@@ -62,12 +69,12 @@ body {
 */
 
 #section3 {
-    text-align: center;
-    margin: 3px 0 3px 0;
+  text-align: center;
+  margin: 3px 0 3px 0;
 }
 #notice2 {
-    color: #FF3F38;
-    font-size: 20px;
+  color: #ff3f38;
+  font-size: 20px;
 }
 
 /*
@@ -75,31 +82,34 @@ body {
 */
 
 #section4 {
-    display: flex;
-    align-self: center;
-    border: 2px solid black;
-    margin: 2px 0 2px 0;
-    width: 90%;
+  display: flex;
+  align-self: center;
+  border: 2px solid black;
+  margin: 2px 0 2px 0;
+  width: 90%;
 }
 
 /*
     Style for buttons section
 */
 
-#section5, #section6, #section7 {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-    margin-top: 5px;
+#section5,
+#section6,
+#section7 {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  margin-top: 5px;
 }
 
 #btn1 {
-    width: 6em;
-    height: 1.4em;
-    background-color: #FFA834;
-    border: 4px dashed #FF3F38;
-    font-size: 2em;
-    font-weight: bold;
+  width: 6.2em;
+  height: 1.4em;
+  background-color: #ffa834;
+  border: 4px dashed #ff3f38;
+  font-size: 2em;
+  font-weight: bold;
 }
+
 
 /*# sourceMappingURL=style.css.map*/

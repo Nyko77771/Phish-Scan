@@ -8,13 +8,18 @@
     "48": "icon.png",
     "128": "icon.png"
   },
-  "content-scripts": {
-    "matches": ["<all_urls>"],
-    "js": "content.js"
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
   "action": {
     "default_title": "Phish Scan",
     "default_popup": "popup.html"
   }
-
 }
