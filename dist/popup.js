@@ -27291,12 +27291,15 @@ var MyComponents = function MyComponents() {
     chrome.runtime.sendMessage({
       message: "tabStatus"
     }, function (response) {
-      setDetectionState(response.emailServiceDetected);
-      setOpenState(response.emailOpenCheck);
-      console.log("Service Detected Result: ".concat(emailService));
-      console.log("Email Opened: ".concat(emailOpened));
+      if (response) {
+        console.log("Response from background: ".concat(response));
+        setDetectionState(response.emailServiceDetected);
+        setOpenState(response.emailOpenCheck);
+      }
     });
   }, []);
+  console.log("Service Detected Result: ".concat(emailService));
+  console.log("Email Opened: ".concat(emailOpened));
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "mainContainer"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {

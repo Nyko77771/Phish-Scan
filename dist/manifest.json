@@ -9,8 +9,7 @@
     "128": "icon.png"
   },
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
@@ -22,5 +21,6 @@
     "default_title": "Phish Scan",
     "default_popup": "popup.html"
   },
-  "permissions": ["storage"]
+  "permissions": ["storage", "tabs", "activeTab"],
+  "host_permissions": ["<all_urls>"]
 }

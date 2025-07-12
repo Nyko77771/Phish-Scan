@@ -1,28 +1,37 @@
 const tab = new Map();
 
-chrome.runtime.onMessage.addListener((request,sender)=>{
-if(request.message === "updateStatus" && sender.tab){
-tab.set(sender.tab.id, {
-emailServiceDetected: request.emailServiceDetected,
-emailOpenCheck: request.emailOpenCheck,
-url: request.url
-})
-}
-});
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message === "updateStatus" && sender.tab) {
+    const tabId = sender.tab.id.toString();
+    chrome.storage.local.set({
+      [tabId]: {
+        emailServiceDetected: request.emailServiceDetected,
+        emailOpenCheck: request.emailOpenedCheck,
+        url: request.url,
+      },
+    });
+  }
+  if (request.message === "tabStatus") {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const defaultResponse = {
+        emailServiceDetected: false,
+        emailOpenedCheck: false,
+      };
 
-chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
-  if(request.message === "tabStatus"){
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) =>{
-      if(tabs.length === 0){
+      if (tabs.length === 0) {
         console.log(`No tabs open`);
-        response(null);
+        sendResponse(defaultResponse);
         return;
       }
-    const tabId = tabs[0].id;
-    const tabData = tab.get(tabId)|| {emailServiceDetected: false, emailOpenCheck: false};
 
-    sendResponse(tabData);
-    })
+      const tabId = tabs[0].id.toString();
+
+      chrome.storage.local.get(tabId, (result) => {
+        const tabData = result[tabId] || defaultResponse;
+
+        sendResponse(tabData);
+      });
+    });
     return true;
   }
-})
+});

@@ -16,13 +16,17 @@ const MyComponents = () => {
         message: "tabStatus",
       },
       (response) => {
-        setDetectionState(response.emailServiceDetected);
-        setOpenState(response.emailOpenCheck);
-        console.log(`Service Detected Result: ${emailService}`);
-        console.log(`Email Opened: ${emailOpened}`);
+        if (response) {
+          console.log(`Response from background: ${response}`);
+          setDetectionState(response.emailServiceDetected);
+          setOpenState(response.emailOpenCheck);
+        }
       }
     );
   }, []);
+
+  console.log(`Service Detected Result: ${emailService}`);
+  console.log(`Email Opened: ${emailOpened}`);
 
   return (
     <div className="mainContainer">
