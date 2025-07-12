@@ -1,35 +1,39 @@
-let emailDetected = false;
-const currentUrl = window.location.href;
+ const urlDetectionController = () => {
+  const url = window.location.href;
 
-// Checking Email Presence (Big Email Providors)
+  let emailServiceDetected = false;
 
-if (
-  currentUrl.includes("mail.google.com") ||
-  currentUrl.includes("outlook.office365.com") ||
-  currentUrl.includes("mail.yahoo.com") ||
-  currentUrl.includes("icloud.com/mail/")
-) {
-  console.log("EMail Detected.");
-  detectChange();
-}
+  let emailOpenedCheck = false;;
 
-//Detecting
-function detectChange() {
-  newUrl = window.location.href;
-  if (newUrl !== currentUrl) {
-    console.log("URL is different");
-    if (
-      newUrl.includes("/mail/inbox/id/") ||
-      newUrl.includes("/mail/u/0/#inbox/") ||
-      newUrl.includes("messageID") ||
-      newUrl.includes("#inbox")
-    ) {
-      console.log("Detected email opened");
-
-      chrome.runtime.sendMessage({
-        from: "content",
-        action: "emailDetected",
-      });
-    }
+  if(
+    url.includes("mail.google.com") ||
+    url.includes("outlook.office365.com") ||
+    url.includes("mail.yahoo.com") ||
+    url.includes("icloud.com/mail/")){
+      emailServiceDetected = true;
+      console.log(`Service detected`);
   }
-}
+
+  if(
+    url.includes("/mail/inbox/id/") ||
+    url.includes("/mail/u/0/") ||
+    url.includes("messageId") ||
+    url.includes("#inbox")
+  ){
+    emailOpenedCheck = true;
+    console.log(`Email opened`);
+  }
+
+  console.log(`Is service: ${emailServiceDetected}\nEmail opened: ${emailOpenedCheck}`)
+
+  chrome.runtime.sendMessage({
+message: "updateStatus",
+emailServiceDetected,
+emailOpenedCheck,
+url
+  })
+
+ }
+
+
+ setTimeout(urlDetectionController,1000);
