@@ -89,24 +89,6 @@ function pageStateCheck() {
   };
 
   window.addEventListener("popstate", urlDetectionController);
-
-  /*
-  const originalPushState = history.pushState;
-  const originalReplaceState = history.replaceState;
-
-  history.pushState = function (...args) {
-    originalPushState.apply(this, args);
-    urlDetectionController();
-  };
-
-  history.replaceState = function (...args) {
-    originalReplaceState.apply(this, args);
-    urlDetectionController();
-  };
-
-  window.addEventListener("popstate", urlDetectionController);
-
-  */
 }
 
 pageStateCheck();
