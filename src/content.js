@@ -1,3 +1,4 @@
+// Initial Popup Response Handling
 let lastUrl = location.href;
 
 function urlDetectionController() {
@@ -39,6 +40,7 @@ function emailOpenController(providedUrl) {
     ) {
       emailOpenedCheck = true;
       console.log(`Gmail: Email opened`);
+      scanPage();
     }
     if (
       (url.includes("outlook.office365.com/mail/") ||
@@ -94,3 +96,41 @@ function pageStateCheck() {
 pageStateCheck();
 
 setTimeout(urlDetectionController, 1000);
+
+// Email Page Scanning
+
+/*
+chrome.runtime.onMessage.addEventListener((request, sender, sendRespone) => {
+  if (request.message === "scanEmail") {
+  }
+});
+*/
+
+function scanPage() {
+  console.log(`Starting scan`);
+  const tags = ["h1", "h2", "h3", "h4", "p", "span ", "div", "a"];
+
+  var emailContent = [];
+  var emailLinks = [];
+
+  tags.forEach((tag) => {
+    console.log(`Tag:${tag}`);
+    const elements = document.querySelectorAll(tag);
+    elements.forEach((element) => {
+      if (element.innerText) {
+        console.log(`Element ${element} contains text`);
+        const text = element.innerText.trim();
+        if (text) {
+          emailContent.push(text);
+        }
+      }
+
+      if (element.tagName.toLowerCase() === "a" && element.href) {
+        console.log(`Element ${element} contains link`);
+        emailLinks.push({ link: element.href, text: element.innerText.trim() });
+      }
+    });
+  });
+
+  console.log(`Finished Email Scan`);
+}

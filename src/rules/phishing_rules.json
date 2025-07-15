@@ -1,0 +1,18 @@
+{
+  "phishing_detection_rules": [
+    {
+      "id": "001",
+      "description": "Urgent messaging",
+      "action": "flag",
+      "words": ["", "", "", "", "", "", "", ""]
+    },
+    {
+      "id": "002",
+      "description": "Common Phrases",
+      "action": "flag",
+      "words": ["", "", "", "", "", "", "", ""]
+    },
+    {},
+    {}
+  ]
+}
