@@ -143,3 +143,22 @@ function scanPage() {
     emailLinks: emailLinks,
   };
 }
+
+function highlightResults() {
+  const terms = ["Cyber security", "SOC"];
+  const tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];
+
+  terms.forEach((term) => {
+    tags.forEach((tag) => {
+      const elements = document.querySelectorAll(tag);
+      elements.forEach((element) => {
+        if (element.innerHTML.includes(term)) {
+          element.innerHTML = element.innerHTML.replaceAll(
+            term,
+            `<span style="background-color: yellow">${term}</span>`
+          );
+        }
+      });
+    });
+  });
+}
