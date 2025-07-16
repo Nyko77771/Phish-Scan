@@ -34,4 +34,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true;
   }
+  if (request.action === "scanEmail") {
+    console.log("Received Scan Request");
+    chrome.tabs.sendMessage(
+      sender.tab.id,
+      { action: "scanPage" },
+      async (response) => {
+        if (!response) {
+          sendResponse({ error: "No response from content.js" });
+          return;
+        }
+        const rules = await fetch(chrome.runtime.getURL("phishing_rules.json"))
+          .then((response) => response.json())
+          .then((data) => data.phishing_detection_rules);
+
+        const results = checkScan();
+      }
+    );
+  }
 });

@@ -99,12 +99,16 @@ setTimeout(urlDetectionController, 1000);
 
 // Email Page Scanning
 
-/*
 chrome.runtime.onMessage.addEventListener((request, sender, sendRespone) => {
   if (request.message === "scanEmail") {
+    console.log("Received scan request");
+
+    const results = scanPage();
+    console.log("Email scan completed");
+    sendRespone(results);
+    return true;
   }
 });
-*/
 
 function scanPage() {
   console.log(`Starting scan`);
@@ -133,4 +137,9 @@ function scanPage() {
   });
 
   console.log(`Finished Email Scan`);
+
+  return {
+    emailText: emailContent,
+    emailLinks: emailLinks,
+  };
 }
