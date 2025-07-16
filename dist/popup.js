@@ -27271,23 +27271,44 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 // creating the html page components variable
 var MyComponents = function MyComponents() {
-  //defining the state for variable emailService and documentScanned using React's useState
+  //defining the state for variable emailService, emailOpened and documentScanned using React's useState
   //adding a function for each variable to update their state
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+  //Also using useState for defining the id of an open tab
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
     _useState2 = _slicedToArray(_useState, 2),
-    emailService = _useState2[0],
-    setDetectionState = _useState2[1];
+    tabId = _useState2[0],
+    setId = _useState2[1];
   var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState4 = _slicedToArray(_useState3, 2),
-    emailOpened = _useState4[0],
-    setOpenState = _useState4[1];
+    emailService = _useState4[0],
+    setDetectionState = _useState4[1];
   var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState6 = _slicedToArray(_useState5, 2),
-    documentScanned = _useState6[0],
-    setScanState = _useState6[1];
+    emailOpened = _useState6[0],
+    setOpenState = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    documentScanned = _useState8[0],
+    setScanState = _useState8[1];
 
   //using useEffect for html page update based on status received from the backgrounds
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function (tabs) {
+      if (tabs.length === 0) {
+        console.log("No Active Tabs");
+        return;
+      }
+      setId(tabs[0].id);
+    });
+  }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (tabId === null) {
+      console.log("No ID set");
+      return;
+    }
     chrome.runtime.sendMessage({
       message: "tabStatus"
     }, function (response) {
@@ -27297,9 +27318,21 @@ var MyComponents = function MyComponents() {
         setOpenState(response.emailOpenCheck);
       }
     });
-  }, []);
+  }, [tabId]);
   console.log("Service Detected Result: ".concat(emailService));
   console.log("Email Opened: ".concat(emailOpened));
+  var startScan = function startScan() {
+    console.log("Popup: Starting Scan");
+    chrome.runtime.sendMessage({
+      action: "startScan",
+      tabId: tabId
+    }, function (response) {
+      if (response.completed) {
+        console.log("Scan has been completed");
+        setScanState(response.completed);
+      }
+    });
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "mainContainer"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -27328,7 +27361,19 @@ var MyComponents = function MyComponents() {
   }, emailOpened && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "button",
     id: "btn1",
-    value: "Scan Email!"
+    value: "Scan Email!",
+    onClick: startScan
+  })), documentScanned && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    id: "section6"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    id: "section7"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "button",
+    id: "btn2",
+    value: "Perform Analysis",
+    onClick: performAnalysis // If you want this to do something
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    id: "section8"
   })));
 };
 var container = document.getElementById("root");

@@ -2,10 +2,7 @@
 /*!************************!*\
   !*** ./src/content.js ***!
   \************************/
-<<<<<<< HEAD
 // Initial Popup Response Handling
-=======
->>>>>>> e2bc1b14a9440746a8fecf7df03328e4c591342f
 var lastUrl = location.href;
 function urlDetectionController() {
   currentUrl = window.location.href;
@@ -31,10 +28,7 @@ function emailOpenController(providedUrl) {
     if (url.includes("mail.google.com/mail/u/0/") && url.match(/#inbox\/[a-zA-Z0-9]+/)) {
       emailOpenedCheck = true;
       console.log("Gmail: Email opened");
-<<<<<<< HEAD
       scanPage();
-=======
->>>>>>> e2bc1b14a9440746a8fecf7df03328e4c591342f
     }
     if ((url.includes("outlook.office365.com/mail/") || url.includes("outlook.live.com/mail/")) && (url.match(/\/mail\/inbox\/id\/[a-zA-Z0-9]+/) || url.match(/\/mail\/[0-9]+\/sentiments\/id\/[a-zA-Z0-9]+/))) {
       emailOpenedCheck = true;
@@ -69,20 +63,24 @@ function pageStateCheck() {
     urlDetectionController();
   };
   window.addEventListener("popstate", urlDetectionController);
-<<<<<<< HEAD
 }
 pageStateCheck();
 setTimeout(urlDetectionController, 1000);
 
 // Email Page Scanning
 
-/*
-chrome.runtime.onMessage.addEventListener((request, sender, sendRespone) => {
-  if (request.message === "scanEmail") {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === "scanPage") {
+    console.log("Content: Performing scan");
+    var results = scanPage();
+    console.log("Email scan completed");
+    //Highlight test
+    console.log("Doing Highlight");
+    highlightResults();
+    sendResponse(results);
+    return true;
   }
 });
-*/
-
 function scanPage() {
   console.log("Starting scan");
   var tags = ["h1", "h2", "h3", "h4", "p", "span ", "div", "a"];
@@ -93,14 +91,14 @@ function scanPage() {
     var elements = document.querySelectorAll(tag);
     elements.forEach(function (element) {
       if (element.innerText) {
-        console.log("Element contains text");
+        console.log("Element ".concat(element, " contains text"));
         var text = element.innerText.trim();
         if (text) {
           emailContent.push(text);
         }
       }
       if (element.tagName.toLowerCase() === "a" && element.href) {
-        console.log("Element contains link");
+        console.log("Element ".concat(element, " contains link"));
         emailLinks.push({
           link: element.href,
           text: element.innerText.trim()
@@ -109,30 +107,25 @@ function scanPage() {
     });
   });
   console.log("Finished Email Scan");
-  console.log("Found text");
-  emailContent.forEach(function (content) {
-    console.log(content);
+  return {
+    emailText: emailContent,
+    emailLinks: emailLinks
+  };
+}
+function highlightResults() {
+  var terms = ["Cyber security", "SOC"];
+  var tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];
+  terms.forEach(function (term) {
+    tags.forEach(function (tag) {
+      var elements = document.querySelectorAll(tag);
+      elements.forEach(function (element) {
+        if (element.innerHTML.includes(term)) {
+          element.innerHTML = element.innerHTML.replaceAll(term, "<span style=\"background-color: yellow\">".concat(term, "</span>"));
+        }
+      });
+    });
   });
 }
-=======
-
-  /*
-  const originalPushState = history.pushState;
-  const originalReplaceState = history.replaceState;
-    history.pushState = function (...args) {
-    originalPushState.apply(this, args);
-    urlDetectionController();
-  };
-    history.replaceState = function (...args) {
-    originalReplaceState.apply(this, args);
-    urlDetectionController();
-  };
-    window.addEventListener("popstate", urlDetectionController);
-    */
-}
-pageStateCheck();
-setTimeout(urlDetectionController, 1000);
->>>>>>> e2bc1b14a9440746a8fecf7df03328e4c591342f
 /******/ })()
 ;
 //# sourceMappingURL=content.js.map

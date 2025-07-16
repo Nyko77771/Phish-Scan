@@ -34,22 +34,42 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true;
   }
-  if (request.action === "scanEmail") {
+
+  if (request.action === "startScan") {
     console.log("Received Scan Request");
+
+    if (!request.tabId) {
+      console.log("No id found");
+      return;
+    }
+
     chrome.tabs.sendMessage(
-      sender.tab.id,
+      request.tabId,
       { action: "scanPage" },
       async (response) => {
         if (!response) {
           sendResponse({ error: "No response from content.js" });
           return;
         }
-        const rules = await fetch(chrome.runtime.getURL("phishing_rules.json"))
-          .then((response) => response.json())
-          .then((data) => data.phishing_detection_rules);
+        try {
+          const rules = await fetch(
+            chrome.runtime.getURL("phishing_rules.json")
+          )
+            .then((response) => {
+              console.log("Obtaining JSON format");
+              response.json();
+            })
+            .then((data) => {
+              console.log("Obtaining Fishing Data Rules");
+              data.phishing_detection_rules;
+            });
 
-        const results = checkScan();
+          const results = checkScan();
+        } catch (error) {
+          console.log(`Unable to perform scan. Error: ${error}`);
+        }
       }
     );
+    return true;
   }
 });
