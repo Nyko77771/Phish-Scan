@@ -1,0 +1,35 @@
+{
+  "name": "phishscan",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Nyko77771/Phish-Scan.git",
+  "author": "Nyko77771 <nykytamcdonald@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "babel-loader": "^10.0.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "^7.1.2",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
+    "style-loader": "^4.0.0",
+       "webpack": "^5.99.9",
+    "webpack-cli": "^6.0.1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  }
+}
