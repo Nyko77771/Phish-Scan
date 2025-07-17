@@ -15,16 +15,25 @@ const MyComponents = () => {
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length === 0) {
-        console.log("No Active Tabs");
+        console.log("`Pop-up: No Active Tabs");
         return;
       }
-      setId(tabs[0].id);
+      const tab = parseInt(tabs[0].id);
+      setId(tab);
+      console.log("`Pop-up: Tab ID set");
     });
   }, []);
 
   useEffect(() => {
+    console.log(`Pop-up: Checking tabId`);
+    console.log(`Pop-up: Tab ID: ${tabId}`);
     if (tabId === null) {
-      console.log("No ID set");
+      console.log("`Pop-up: No ID set");
+      return;
+    }
+
+    if (isNaN(tabId)) {
+      console.log(`Pop-up: TabId is not a number`);
       return;
     }
 
@@ -34,7 +43,7 @@ const MyComponents = () => {
       },
       (response) => {
         if (response) {
-          console.log(`Response from background: ${response}`);
+          console.log("Pop-up: Tab Status Response from Background.");
           setDetectionState(response.emailServiceDetected);
           setOpenState(response.emailOpenCheck);
         }
@@ -42,14 +51,14 @@ const MyComponents = () => {
     );
   }, [tabId]);
 
-  console.log(`Service Detected Result: ${emailService}`);
-  console.log(`Email Opened: ${emailOpened}`);
+  console.log(`Pop-up: Service Detected Result: ${emailService}`);
+  console.log(`Pop-up: Email Opened: ${emailOpened}`);
 
   const startScan = () => {
     console.log("Popup: Starting Scan");
     chrome.runtime.sendMessage({ action: "startScan", tabId }, (response) => {
       if (response.completed) {
-        console.log("Scan has been completed");
+        console.log("Pop-up: Scan has been completed");
         setScanState(response.completed);
       }
     });

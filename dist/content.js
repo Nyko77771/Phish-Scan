@@ -73,32 +73,35 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === "scanPage") {
     console.log("Content: Performing scan");
     var results = scanPage();
-    console.log("Email scan completed");
-    //Highlight test
-    console.log("Doing Highlight");
-    highlightResults();
-    sendResponse(results);
+    console.log("Content: Email scan completed");
+    var tabId = request.tabId;
+    sendResponse({
+      tabId: tabId,
+      results: results
+    });
     return true;
+  }
+  if (request.action === "highlightPage") {
+    //Highlight test
+    console.log("Content: Doing Highlight");
+    highlightResults();
   }
 });
 function scanPage() {
-  console.log("Starting scan");
+  console.log("Content: Starting scan");
   var tags = ["h1", "h2", "h3", "h4", "p", "span ", "div", "a"];
   var emailContent = [];
   var emailLinks = [];
   tags.forEach(function (tag) {
-    console.log("Tag:".concat(tag));
     var elements = document.querySelectorAll(tag);
     elements.forEach(function (element) {
       if (element.innerText) {
-        console.log("Element ".concat(element, " contains text"));
         var text = element.innerText.trim();
         if (text) {
           emailContent.push(text);
         }
       }
       if (element.tagName.toLowerCase() === "a" && element.href) {
-        console.log("Element ".concat(element, " contains link"));
         emailLinks.push({
           link: element.href,
           text: element.innerText.trim()
@@ -106,12 +109,15 @@ function scanPage() {
       }
     });
   });
-  console.log("Finished Email Scan");
+  console.log("Content: Finished Email Scan");
   return {
     emailText: emailContent,
     emailLinks: emailLinks
   };
 }
+
+//Term Highlight
+
 function highlightResults() {
   var terms = ["Cyber security", "SOC"];
   var tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];

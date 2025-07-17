@@ -10,16 +10,22 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+//Creting a tab object for storing a pair of values
 var tab = new Map();
+
+//chrome Listener for incoming messages
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  // Handling the status update request
   if (request.message === "updateStatus" && sender.tab) {
     var tabId = sender.tab.id.toString();
+    // Setting the storage of the local opened tab
     chrome.storage.local.set(_defineProperty({}, tabId, {
       emailServiceDetected: request.emailServiceDetected,
       emailOpenCheck: request.emailOpenedCheck,
       url: request.url
     }));
   }
+  // Handling the sending of local tab data
   if (request.message === "tabStatus") {
     chrome.tabs.query({
       active: true,
@@ -42,21 +48,29 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
     return true;
   }
+
+  // Handling the email scan request
   if (request.action === "startScan") {
-    console.log("Received Scan Request");
+    console.log("Background: Received Scan Request");
+    console.log("Tab ID: ".concat(request.tabId));
+
+    //Checking if the request contains an id
     if (!request.tabId) {
       console.log("No id found");
       return;
     }
+
+    //Sending a message to content.js
     chrome.tabs.sendMessage(request.tabId, {
-      action: "scanPage"
+      action: "scanPage",
+      tabId: request.tabId
     }, /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(response) {
-        var rules, results, _t;
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(contentResponse) {
+        var jsonRules, results, _t;
         return _regenerator().w(function (_context) {
           while (1) switch (_context.n) {
             case 0:
-              if (response) {
+              if (contentResponse) {
                 _context.n = 1;
                 break;
               }
@@ -69,14 +83,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               _context.n = 2;
               return fetch(chrome.runtime.getURL("phishing_rules.json")).then(function (response) {
                 console.log("Obtaining JSON format");
-                response.json();
+                return response.json();
               }).then(function (data) {
                 console.log("Obtaining Fishing Data Rules");
-                data.phishing_detection_rules;
+                return data.phishing_detection_rules;
               });
             case 2:
-              rules = _context.v;
-              results = checkScan();
+              jsonRules = _context.v;
+              // Performing the check of the scan
+              results = checkScan(jsonRules, contentResponse);
               _context.n = 4;
               break;
             case 3:
@@ -95,6 +110,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
 });
+function checkScan(jsonFile, scanResults) {
+  console.log("JSON file: ".concat(jsonFile));
+  console.log("Scan Results: ".concat(scanResults.results.emailText));
+}
 /******/ })()
 ;
 //# sourceMappingURL=background.js.map

@@ -58,6 +58,10 @@ module.exports = {
           from: path.resolve("./src/assets/logo.png"),
           to: path.resolve("dist"),
         },
+        {
+          from: path.resolve("./src/rules/phishing_rules.json"),
+          to: path.resolve("dist"),
+        },
       ],
     }),
     new htmlPlugin({

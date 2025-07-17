@@ -27298,29 +27298,37 @@ var MyComponents = function MyComponents() {
       currentWindow: true
     }, function (tabs) {
       if (tabs.length === 0) {
-        console.log("No Active Tabs");
+        console.log("`Pop-up: No Active Tabs");
         return;
       }
-      setId(tabs[0].id);
+      var tab = parseInt(tabs[0].id);
+      setId(tab);
+      console.log("`Pop-up: Tab ID set");
     });
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    console.log("Pop-up: Checking tabId");
+    console.log("Pop-up: Tab ID: ".concat(tabId));
     if (tabId === null) {
-      console.log("No ID set");
+      console.log("`Pop-up: No ID set");
+      return;
+    }
+    if (isNaN(tabId)) {
+      console.log("Pop-up: TabId is not a number");
       return;
     }
     chrome.runtime.sendMessage({
       message: "tabStatus"
     }, function (response) {
       if (response) {
-        console.log("Response from background: ".concat(response));
+        console.log("Pop-up: Tab Status Response from Background.");
         setDetectionState(response.emailServiceDetected);
         setOpenState(response.emailOpenCheck);
       }
     });
   }, [tabId]);
-  console.log("Service Detected Result: ".concat(emailService));
-  console.log("Email Opened: ".concat(emailOpened));
+  console.log("Pop-up: Service Detected Result: ".concat(emailService));
+  console.log("Pop-up: Email Opened: ".concat(emailOpened));
   var startScan = function startScan() {
     console.log("Popup: Starting Scan");
     chrome.runtime.sendMessage({
@@ -27328,7 +27336,7 @@ var MyComponents = function MyComponents() {
       tabId: tabId
     }, function (response) {
       if (response.completed) {
-        console.log("Scan has been completed");
+        console.log("Pop-up: Scan has been completed");
         setScanState(response.completed);
       }
     });
