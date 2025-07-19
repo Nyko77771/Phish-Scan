@@ -3,7 +3,10 @@
   !*** ./src/content.js ***!
   \************************/
 // Initial Popup Response Handling
+// variable for initial url
 var lastUrl = location.href;
+
+// Controller function for detecting url changes
 function urlDetectionController() {
   currentUrl = window.location.href;
   if (currentUrl != lastUrl) {
@@ -14,6 +17,8 @@ function urlDetectionController() {
     emailOpenController(currentUrl);
   }
 }
+
+// function for detecting email services and if email is opened
 function emailOpenController(providedUrl) {
   var url = providedUrl;
   var emailServiceDetected = false;
@@ -51,6 +56,17 @@ function emailOpenController(providedUrl) {
     url: url
   });
 }
+
+//Function pageStateCheck was created using some advice found on StackOverflow.
+//This function tracks the changes in the state of tabs
+/***************************************************************************************
+ *    Title: How to detect if URL has changed after hash in JavaScript
+ *    Author: aljgom
+ *    Date: 15/10/2018
+ *    Availability: https://stackoverflow.com/questions/6390341/how-to-detect-if-url-has-changed-after-hash-in-javascript
+ *
+ ***************************************************************************************/
+
 function pageStateCheck() {
   var oldPushState = history.pushState;
   var oldReplaceState = history.replaceState;
@@ -64,17 +80,25 @@ function pageStateCheck() {
   };
   window.addEventListener("popstate", urlDetectionController);
 }
+
+// calling pageStateCheck
 pageStateCheck();
+
+// calling urlDetection after a minute
 setTimeout(urlDetectionController, 1000);
 
 // Email Page Scanning
-
+//Using listener for receiving scan request
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === "scanPage") {
     console.log("Content: Performing scan");
+    // Saving scan page results into results variable
     var results = scanPage();
     console.log("Content: Email scan completed");
+
+    // Saving id from the request into tab ID variable
     var tabId = request.tabId;
+    // Sending scan results back to background
     sendResponse({
       tabId: tabId,
       results: results
@@ -87,9 +111,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     highlightResults();
   }
 });
+
+//Function for scanning email contents
 function scanPage() {
   console.log("Content: Starting scan");
+  //Defining different tags that hold text
   var tags = ["h1", "h2", "h3", "h4", "p", "span ", "div", "a"];
+
+  // Empty lists for storing text and links
   var emailContent = [];
   var emailLinks = [];
   tags.forEach(function (tag) {
@@ -117,7 +146,7 @@ function scanPage() {
 }
 
 //Term Highlight
-
+// Function for highlighting the email page
 function highlightResults() {
   var terms = ["Cyber security", "SOC"];
   var tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];

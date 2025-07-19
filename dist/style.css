@@ -109,6 +109,7 @@ body {
   border: 4px dashed #ff3f38;
   font-size: 2em;
   font-weight: bold;
+  cursor: pointer;
 }
 
 #btn1:active {

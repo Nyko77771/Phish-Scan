@@ -43,19 +43,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   // Handling the email scan request
   if (request.action === "startScan") {
     console.log("Background: Received Scan Request");
-    console.log(`Tab ID: ${request.tabId}`);
+    const id = request.tabId;
+    console.log(`Background: Tab ID: ${id}`);
 
     //Checking if the request contains an id
-    if (!request.tabId) {
-      console.log("No id found");
+    if (!id) {
+      console.log("Background: No id found");
       return;
     }
 
     //Sending a message to content.js
     chrome.tabs.sendMessage(
-      request.tabId,
-      { action: "scanPage", tabId: request.tabId },
+      id,
+      { action: "scanPage", tabId: id },
       async (contentResponse) => {
+        //Checking response
         if (!contentResponse) {
           sendResponse({ error: "No response from content.js" });
           return;
@@ -66,16 +68,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             chrome.runtime.getURL("phishing_rules.json")
           )
             .then((response) => {
-              console.log("Obtaining JSON format");
+              console.log("Background: Obtaining JSON format");
               return response.json();
             })
             .then((data) => {
-              console.log("Obtaining Fishing Data Rules");
+              console.log("Background: Obtaining Fishing Data Rules");
               return data.phishing_detection_rules;
             });
 
           // Performing the check of the scan
           const results = checkScan(jsonRules, contentResponse);
+          chrome.tabs.sendMessage(
+            id,
+            { action: "highlightPage", words: results.rules, tabId: id },
+            async (contentResponse2) => {
+              if (!contentResponse2) {
+                console.log(`Background: Highlight failed`);
+                sendResponse({ completed: false });
+              }
+
+              console.log(`Background: Highlighted Response Received`);
+              sendResponse({ completed: true });
+            }
+          );
         } catch (error) {
           console.log(`Unable to perform scan. Error: ${error}`);
         }
@@ -85,11 +100,71 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+// function for checking the scanned email content against JSON rules
 function checkScan(jsonFile, scanResults) {
-  /*
-  console.log(`JSON file: ${jsonFile}`);
-  console.log(`Scan Results: ${scanResults.results.emailText}`);
-  */
+  //console.log(`Scan Results: ${scanResults.results.emailText}`);
+  //console.log(`Scan Results Type: ${typeof scanResults.results.emailText}`);
+  console.log(
+    `Scan Results Type: ${typeof String(scanResults.results.emailText)}`
+  );
+  console.log(`Scan Results: ${String(scanResults.results.emailText)}`);
 
-  console.log("Starting check of scans");
+  const emailText = String(scanResults.results.emailText).toLowerCase();
+  const emailLinks = String(scanResults.results.emailLinks).toLowerCase();
+  var foundRules = [];
+  var wordsToHighlight = [];
+
+  console.log(`Email Text: ${emailText}`);
+  // console.log(`Email Link: ${emailLinks}`);
+
+  console.log("Background: Starting check of scans");
+
+  try {
+    for (let i = 0; i < jsonFile.length; i++) {
+      const rule = jsonFile[i];
+      const words = rule.words;
+      const foundWords = [];
+      const foundLinks = [];
+
+      words.forEach((word) => {
+        if (
+          emailText.includes(word.toLowerCase()) ||
+          emailLinks.includes(word.toLowerCase())
+        ) {
+          foundWords.push(word);
+          wordsToHighlight.push(word);
+        }
+      });
+
+      //!Logic fo links to be added later as links rules have not yet been completed
+
+      if (foundWords.length > 0) {
+        if (foundLinks.length > 0) {
+          foundRules.push({
+            description: rule.description,
+            words: foundWords,
+            links: foundLinks,
+          });
+        } else {
+          foundRules.push({
+            description: rule.description,
+            words: foundWords,
+            links: "Not found",
+          });
+        }
+      }
+    }
+
+    console.log(`Rules found: ${foundRules[0].description}`);
+    console.log(`Words that need to highlighted: ${wordsToHighlight}`);
+
+    console.log(`Check completed`);
+
+    return {
+      rules: foundRules,
+      toHighlight: wordsToHighlight,
+    };
+  } catch (error) {
+    console.log(`An error occured ${error}`);
+  }
 }

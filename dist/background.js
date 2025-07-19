@@ -110,9 +110,65 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
 });
+
+// function for checking the scanned email content against JSON rules
 function checkScan(jsonFile, scanResults) {
-  console.log("JSON file: ".concat(jsonFile));
-  console.log("Scan Results: ".concat(scanResults.results.emailText));
+  //console.log(`Scan Results: ${scanResults.results.emailText}`);
+  //console.log(`Scan Results Type: ${typeof scanResults.results.emailText}`);
+  console.log("Scan Results Type: ".concat(_typeof(String(scanResults.results.emailText))));
+  console.log("Scan Results: ".concat(String(scanResults.results.emailText)));
+  var emailText = String(scanResults.results.emailText).toLowerCase();
+  var emailLinks = String(scanResults.results.emailLinks).toLowerCase();
+  var foundRules = [];
+  var wordsToHighlight = [];
+  console.log("Email Text: ".concat(emailText));
+  // console.log(`Email Link: ${emailLinks}`);
+
+  console.log("Background: Starting check of scans");
+  try {
+    var _loop = function _loop() {
+      var rule = jsonFile[i];
+      var words = rule.words;
+      var foundWords = [];
+      var foundLinks = [];
+      words.forEach(function (word) {
+        if (emailText.includes(word.toLowerCase()) || emailLinks.includes(word.toLowerCase())) {
+          foundWords.push(word);
+          wordsToHighlight.push(word);
+        }
+      });
+
+      //!Logic fo links to be added later as links rules have not yet been completed
+
+      if (foundWords.length > 0) {
+        if (foundLinks.length > 0) {
+          foundRules.push({
+            description: rule.description,
+            words: foundWords,
+            links: foundLinks
+          });
+        } else {
+          foundRules.push({
+            description: rule.description,
+            words: foundWords,
+            links: "Not found"
+          });
+        }
+      }
+    };
+    for (var i = 0; i < jsonFile.length; i++) {
+      _loop();
+    }
+    console.log("Rules found: ".concat(foundRules[0].description));
+    console.log("Words that need to highlighted: ".concat(wordsToHighlight));
+    console.log("Check completed");
+    return {
+      rules: foundRules,
+      toHighlight: wordsToHighlight
+    };
+  } catch (error) {
+    console.log("An error occured ".concat(error));
+  }
 }
 /******/ })()
 ;
