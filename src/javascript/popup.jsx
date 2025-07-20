@@ -1,5 +1,5 @@
 //importing few modules from react and react-dom
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 // creating the html page components variable
@@ -58,8 +58,10 @@ const MyComponents = () => {
   }, [tabId]);
 
   //Checking the returned results
+  /*
   console.log(`Pop-up: Service Detected Result: ${emailService}`);
   console.log(`Pop-up: Email Opened: ${emailOpened}`);
+  */
 
   //Function for initialising the scan
   const startScan = () => {
@@ -138,7 +140,9 @@ const MyComponents = () => {
           </>
         )}
       </div>
-      //Alert box
+
+      {/* Custom Alert Pop-up */}
+
       {showAlert && (
         <>
           <div className="alertBox">
@@ -146,13 +150,22 @@ const MyComponents = () => {
               {displayRules != null && displayRules.length > 0 ? (
                 <>
                   <h3>Found Phishing Rules!</h3>
+                  <table>
+                    {displayRules.map((rule, i) => (
+                      <tr key={i}>
+                        <th>{rule.description}:</th>
+                        <td>{rule.words.join(", ")}</td>
+                        <td>{rule.link}</td>
+                      </tr>
+                    ))}
+                  </table>
                 </>
               ) : (
                 <>
                   <h3>No Rules Detected!</h3>
                 </>
               )}
-              <button className="btnA1" onClick={hideAlert}>
+              <button id="btnA1" onClick={hideAlert}>
                 Close
               </button>
             </div>
@@ -163,7 +176,10 @@ const MyComponents = () => {
   );
 };
 
+//Getting the root div from popup.html
 const container = document.getElementById("root");
+//Creating a root inside the defined container to display React components
 const root = createRoot(container);
 
+//Visually rendering my components inside popup.html
 root.render(<MyComponents />);

@@ -27266,6 +27266,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+//importing few modules from react and react-dom
 
 
 
@@ -27294,6 +27295,10 @@ var MyComponents = function MyComponents() {
     _useState0 = _slicedToArray(_useState9, 2),
     displayRules = _useState0[0],
     setRules = _useState0[1];
+  var _useState1 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState10 = _slicedToArray(_useState1, 2),
+    showAlert = _useState10[0],
+    setAlert = _useState10[1];
 
   //using useEffect for html page update based on status received from the backgrounds
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -27310,6 +27315,8 @@ var MyComponents = function MyComponents() {
       console.log("`Pop-up: Tab ID set");
     });
   }, []);
+
+  //Using effect to check the id presence
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     console.log("Pop-up: Checking tabId");
     console.log("Pop-up: Tab ID: ".concat(tabId));
@@ -27317,10 +27324,14 @@ var MyComponents = function MyComponents() {
       console.log("`Pop-up: No ID set");
       return;
     }
+
+    //Checking if id is a number
     if (isNaN(tabId)) {
       console.log("Pop-up: TabId is not a number");
       return;
     }
+
+    //Getting status of service and email
     chrome.runtime.sendMessage({
       message: "tabStatus"
     }, function (response) {
@@ -27331,21 +27342,48 @@ var MyComponents = function MyComponents() {
       }
     });
   }, [tabId]);
-  console.log("Pop-up: Service Detected Result: ".concat(emailService));
-  console.log("Pop-up: Email Opened: ".concat(emailOpened));
+
+  //Checking the returned results
+  /*
+  console.log(`Pop-up: Service Detected Result: ${emailService}`);
+  console.log(`Pop-up: Email Opened: ${emailOpened}`);
+  */
+
+  //Function for initialising the scan
   var startScan = function startScan() {
     console.log("Popup: Starting Scan");
+    //Sending message to background to start the process
     chrome.runtime.sendMessage({
       action: "startScan",
       tabId: tabId
     }, function (response) {
+      //Checking the response received
       if (response.completed) {
         console.log("Pop-up: Scan has been completed");
         setScanState(response.completed);
+        //Checking for rule presence
+        if (response.rules && response.rules.length > 0) {
+          console.log("Pop-up: Rules are present");
+          setRules(response.rules);
+        } else {
+          console.log("Pop-up: No rules present");
+        }
       }
     });
   };
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+
+  // Function for creating custom alert message
+  var createAlert = function createAlert() {
+    console.log("Pop-up: Creating the alert message");
+    setAlert(true);
+  };
+  var hideAlert = function hideAlert() {
+    console.log("Pop-up: Removing the alert message");
+    setAlert(false);
+  };
+
+  //Returning custom html page
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "mainContainer"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     id: "section1"
@@ -27382,14 +27420,30 @@ var MyComponents = function MyComponents() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "button",
     id: "btn2",
-    value: "Show Details"
-    //onClick={performAnalysis}
+    value: "Show Details",
+    onClick: createAlert
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     id: "section8"
-  })));
+  }))), showAlert && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "alertBox"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "alertItems"
+  }, displayRules != null && displayRules.length > 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", null, "Found Phishing Rules!"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", null, displayRules.map(function (rule, i) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", {
+      key: i
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", null, rule.description, ":"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, rule.words.join(", ")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", null, rule.link));
+  }))) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", null, "No Rules Detected!")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    id: "btnA1",
+    onClick: hideAlert
+  }, "Close")))));
 };
+
+//Getting the root div from popup.html
 var container = document.getElementById("root");
+//Creating a root inside the defined container to display React components
 var root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot)(container);
+
+//Visually rendering my components inside popup.html
 root.render(/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(MyComponents, null));
 })();
 

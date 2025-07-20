@@ -92,7 +92,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             case 2:
               jsonRules = _context2.v;
               // Performing the check of the scan
-              results = checkScan(jsonRules, contentResponse);
+              results = checkScan(jsonRules, contentResponse); //Sending another for highlighting words
               chrome.tabs.sendMessage(id, {
                 action: "highlightPage",
                 words: results.toHighlight,
@@ -102,12 +102,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                   return _regenerator().w(function (_context) {
                     while (1) switch (_context.n) {
                       case 0:
+                        //Checking for response presence and for false value
                         if (!contentResponse2 || contentResponse2 === false) {
                           console.log("Background: Highlight failed");
+                          //Sending response if false or no response from content.js
                           sendResponse({
                             completed: false
                           });
                         }
+
+                        //Sending Response if true
                         console.log("Background: Highlighted Response Received");
                         sendResponse({
                           completed: true,
@@ -127,7 +131,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             case 3:
               _context2.p = 3;
               _t = _context2.v;
-              console.log("Unable to perform scan. Error: ".concat(_t));
+              console.log("Background: Unable to perform scan. Error: ".concat(_t));
             case 4:
               return _context2.a(2);
           }
