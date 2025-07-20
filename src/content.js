@@ -167,6 +167,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 //Function for scanning email contents
 function scanPage() {
   console.log(`Content: Starting scan`);
+
+  const emailContainer = document.querySelector(".a3s");
+
+  if (!emailContainer) {
+    console.log(`Content: No email body found`);
+    return {
+      emailText: [],
+      emailLinks: [],
+    };
+  }
+
   //Defining different tags that hold text
   const tags = ["h1", "h2", "h3", "h4", "p", "span ", "div", "a"];
 
@@ -177,7 +188,7 @@ function scanPage() {
   //Looping through each tag
   tags.forEach((tag) => {
     //Getting elements based on tag
-    const elements = document.querySelectorAll(tag);
+    const elements = emailContainer.querySelectorAll(tag);
     // Looping through each element found
     elements.forEach((element) => {
       //Seeing if there is text inside the element
@@ -206,20 +217,36 @@ function scanPage() {
 //Term Highlight
 // Function for highlighting the email page
 function highlightResults(words) {
-  const terms = ["Cyber security", "SOC"];
+  //console.log(`These are words that need to be highlighted: ${words}`);
+  const terms = words;
+
+  if (terms.length === 0) {
+    alert(`Nothing to highlight!`);
+    return false;
+  }
+
   const tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];
 
-  terms.forEach((term) => {
-    tags.forEach((tag) => {
-      const elements = document.querySelectorAll(tag);
-      elements.forEach((element) => {
-        if (element.innerHTML.includes(term)) {
-          element.innerHTML = element.innerHTML.replaceAll(
-            term,
-            `<span style="background-color: yellow">${term}</span>`
-          );
-        }
+  console.log(`Content: starting highlight`);
+  try {
+    terms.forEach((term) => {
+      tags.forEach((tag) => {
+        const elements = document.querySelectorAll(tag);
+        elements.forEach((element) => {
+          if (element.innerHTML.toLowerCase().includes(term.toLowerCase())) {
+            const regularExpression = new RegExp(`\\b${term}\\b`, "gi");
+            element.innerHTML = element.innerHTML.replaceAll(
+              regularExpression,
+              `<span style="background-color: yellow">${term}</span>`
+            );
+          }
+        });
       });
     });
-  });
+    console.log(`Content: highlight is finished`);
+    return true;
+  } catch (error) {
+    console.log(`Content: Failed to highlight found terms. Error: ${error}`);
+    return false;
+  }
 }

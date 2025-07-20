@@ -35,12 +35,17 @@
       "description": "Alert Triggers",
       "action": "flag",
       "words": [
-        "failure notice",
-        "account locked",
-        "account suspended",
-        "pending verification",
-        "security warning",
-        "action required"
+        "failure",
+        "notice",
+        "account",
+        "locked",
+        "suspended",
+        "pending",
+        "verification",
+        "security",
+        "warning",
+        "action",
+        "required"
       ]
     },
     {
@@ -48,13 +53,18 @@
       "description": "Financial Terms",
       "action": "flag",
       "words": [
-        "amount due",
-        "balance overdue",
-        "tax refund",
-        "payment request",
-        "invoice attached",
-        "bank account",
-        "wire transfer"
+        "amount",
+        "due",
+        "balance",
+        "tax",
+        "refund",
+        "payment",
+        "invoice",
+        "attached",
+        "bank",
+        "account",
+        "wire",
+        "transfer"
       ]
     },
     {
@@ -62,11 +72,16 @@
       "description": "Threatening Language",
       "action": "flag",
       "words": [
-        "suspicious activity",
-        "security breach",
-        "legal action",
-        "final notice",
-        "report to authority"
+        "suspicious",
+        "activity",
+        "security",
+        "breach",
+        "legal",
+        "final",
+        "notice",
+        "report",
+        "authority",
+        "exploit"
       ]
     }
   ]

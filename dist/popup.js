@@ -27290,6 +27290,10 @@ var MyComponents = function MyComponents() {
     _useState8 = _slicedToArray(_useState7, 2),
     documentScanned = _useState8[0],
     setScanState = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    displayRules = _useState0[0],
+    setRules = _useState0[1];
 
   //using useEffect for html page update based on status received from the backgrounds
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -27378,8 +27382,8 @@ var MyComponents = function MyComponents() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "button",
     id: "btn2",
-    value: "Perform Analysis",
-    onClick: performAnalysis // If you want this to do something
+    value: "Perform Analysis"
+    //onClick={performAnalysis}
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     id: "section8"
   })));

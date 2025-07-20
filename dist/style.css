@@ -81,7 +81,8 @@ body {
     Style for second break line
 */
 
-#section4 {
+#section4,
+#section6 {
   display: flex;
   align-self: center;
   border: 2px solid black;
@@ -94,7 +95,6 @@ body {
 */
 
 #section5,
-#section6,
 #section7 {
   display: flex;
   justify-content: center;
@@ -117,6 +117,16 @@ body {
   color: #c7c7c7;
   border-left: 5px solid #14232c;
   border-top: 5px solid #14232c;
+}
+
+#btn2 {
+  width: 6.2em;
+  height: 1.4em;
+  background-color: #fec89a;
+  border: 2px dashed #f77f00;
+  font-size: 2em;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 

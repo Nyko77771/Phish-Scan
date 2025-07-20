@@ -10,6 +10,7 @@ const MyComponents = () => {
   const [emailService, setDetectionState] = useState(false);
   const [emailOpened, setOpenState] = useState(false);
   const [documentScanned, setScanState] = useState(false);
+  const [displayRules, setRules] = useState(null);
 
   //using useEffect for html page update based on status received from the backgrounds
   useEffect(() => {
@@ -101,7 +102,7 @@ const MyComponents = () => {
               type="button"
               id="btn2"
               value="Perform Analysis"
-              onClick={performAnalysis} // If you want this to do something
+              //onClick={performAnalysis}
             />
           </div>
           <div id="section8"></div>

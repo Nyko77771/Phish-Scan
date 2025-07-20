@@ -80,15 +80,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           const results = checkScan(jsonRules, contentResponse);
           chrome.tabs.sendMessage(
             id,
-            { action: "highlightPage", words: results.rules, tabId: id },
+            { action: "highlightPage", words: results.toHighlight, tabId: id },
             async (contentResponse2) => {
-              if (!contentResponse2) {
+              if (!contentResponse2 || contentResponse2 === false) {
                 console.log(`Background: Highlight failed`);
                 sendResponse({ completed: false });
               }
 
               console.log(`Background: Highlighted Response Received`);
-              sendResponse({ completed: true });
+              sendResponse({ completed: true, rules: results.rules });
             }
           );
         } catch (error) {
@@ -102,22 +102,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // function for checking the scanned email content against JSON rules
 function checkScan(jsonFile, scanResults) {
-  //console.log(`Scan Results: ${scanResults.results.emailText}`);
-  //console.log(`Scan Results Type: ${typeof scanResults.results.emailText}`);
-  console.log(
-    `Scan Results Type: ${typeof String(scanResults.results.emailText)}`
-  );
-  console.log(`Scan Results: ${String(scanResults.results.emailText)}`);
+  const emailTextObject = scanResults.results.emailText;
+  const emailText = Object.values(emailTextObject).join(" ").toLowerCase();
+  const emailLinksObject = scanResults.results.emailLinks;
+  const emailLinks = Object.values(emailLinksObject).join(" ").toLowerCase();
 
-  const emailText = String(scanResults.results.emailText).toLowerCase();
-  const emailLinks = String(scanResults.results.emailLinks).toLowerCase();
+  console.log(`Backgorund:\nEmail Text: ${emailText}`);
+  console.log("Background: Starting check of scans");
+
   var foundRules = [];
   var wordsToHighlight = [];
-
-  console.log(`Email Text: ${emailText}`);
-  // console.log(`Email Link: ${emailLinks}`);
-
-  console.log("Background: Starting check of scans");
 
   try {
     for (let i = 0; i < jsonFile.length; i++) {
@@ -127,9 +121,10 @@ function checkScan(jsonFile, scanResults) {
       const foundLinks = [];
 
       words.forEach((word) => {
+        const regularExpression = new RegExp(`\\b${word}\\b`, "i");
         if (
-          emailText.includes(word.toLowerCase()) ||
-          emailLinks.includes(word.toLowerCase())
+          regularExpression.test(emailText) ||
+          regularExpression.test(emailLinks)
         ) {
           foundWords.push(word);
           wordsToHighlight.push(word);
@@ -155,16 +150,26 @@ function checkScan(jsonFile, scanResults) {
       }
     }
 
-    console.log(`Rules found: ${foundRules[0].description}`);
-    console.log(`Words that need to highlighted: ${wordsToHighlight}`);
+    if (foundRules.length > 0) {
+      console.log(`Background: Rules found: ${foundRules[0].description}`);
+    } else {
+      console.log(`Background: No rules found`);
+    }
+    if (wordsToHighlight.length > 0) {
+      console.log(
+        `Background:  Words that need to be highlighted: ${wordsToHighlight}`
+      );
+    } else {
+      console.log(`Background: Nothing to highlight`);
+    }
 
-    console.log(`Check completed`);
+    console.log(`Background: Check completed`);
 
     return {
       rules: foundRules,
       toHighlight: wordsToHighlight,
     };
   } catch (error) {
-    console.log(`An error occured ${error}`);
+    console.log(`Background:  An error occured ${error}`);
   }
 }

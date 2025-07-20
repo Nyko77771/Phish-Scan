@@ -52,56 +52,86 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   // Handling the email scan request
   if (request.action === "startScan") {
     console.log("Background: Received Scan Request");
-    console.log("Tab ID: ".concat(request.tabId));
+    var id = request.tabId;
+    console.log("Background: Tab ID: ".concat(id));
 
     //Checking if the request contains an id
-    if (!request.tabId) {
-      console.log("No id found");
+    if (!id) {
+      console.log("Background: No id found");
       return;
     }
 
     //Sending a message to content.js
-    chrome.tabs.sendMessage(request.tabId, {
+    chrome.tabs.sendMessage(id, {
       action: "scanPage",
-      tabId: request.tabId
+      tabId: id
     }, /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(contentResponse) {
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(contentResponse) {
         var jsonRules, results, _t;
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.n) {
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
             case 0:
               if (contentResponse) {
-                _context.n = 1;
+                _context2.n = 1;
                 break;
               }
               sendResponse({
                 error: "No response from content.js"
               });
-              return _context.a(2);
+              return _context2.a(2);
             case 1:
-              _context.p = 1;
-              _context.n = 2;
+              _context2.p = 1;
+              _context2.n = 2;
               return fetch(chrome.runtime.getURL("phishing_rules.json")).then(function (response) {
-                console.log("Obtaining JSON format");
+                console.log("Background: Obtaining JSON format");
                 return response.json();
               }).then(function (data) {
-                console.log("Obtaining Fishing Data Rules");
+                console.log("Background: Obtaining Fishing Data Rules");
                 return data.phishing_detection_rules;
               });
             case 2:
-              jsonRules = _context.v;
+              jsonRules = _context2.v;
               // Performing the check of the scan
               results = checkScan(jsonRules, contentResponse);
-              _context.n = 4;
+              chrome.tabs.sendMessage(id, {
+                action: "highlightPage",
+                words: results.toHighlight,
+                tabId: id
+              }, /*#__PURE__*/function () {
+                var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(contentResponse2) {
+                  return _regenerator().w(function (_context) {
+                    while (1) switch (_context.n) {
+                      case 0:
+                        if (!contentResponse2 || contentResponse2 === false) {
+                          console.log("Background: Highlight failed");
+                          sendResponse({
+                            completed: false
+                          });
+                        }
+                        console.log("Background: Highlighted Response Received");
+                        sendResponse({
+                          completed: true,
+                          rules: results.rules
+                        });
+                      case 1:
+                        return _context.a(2);
+                    }
+                  }, _callee);
+                }));
+                return function (_x2) {
+                  return _ref2.apply(this, arguments);
+                };
+              }());
+              _context2.n = 4;
               break;
             case 3:
-              _context.p = 3;
-              _t = _context.v;
+              _context2.p = 3;
+              _t = _context2.v;
               console.log("Unable to perform scan. Error: ".concat(_t));
             case 4:
-              return _context.a(2);
+              return _context2.a(2);
           }
-        }, _callee, null, [[1, 3]]);
+        }, _callee2, null, [[1, 3]]);
       }));
       return function (_x) {
         return _ref.apply(this, arguments);
@@ -113,18 +143,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 // function for checking the scanned email content against JSON rules
 function checkScan(jsonFile, scanResults) {
-  //console.log(`Scan Results: ${scanResults.results.emailText}`);
-  //console.log(`Scan Results Type: ${typeof scanResults.results.emailText}`);
-  console.log("Scan Results Type: ".concat(_typeof(String(scanResults.results.emailText))));
-  console.log("Scan Results: ".concat(String(scanResults.results.emailText)));
-  var emailText = String(scanResults.results.emailText).toLowerCase();
-  var emailLinks = String(scanResults.results.emailLinks).toLowerCase();
+  var emailTextObject = scanResults.results.emailText;
+  var emailText = Object.values(emailTextObject).join(" ").toLowerCase();
+  var emailLinksObject = scanResults.results.emailLinks;
+  var emailLinks = Object.values(emailLinksObject).join(" ").toLowerCase();
+  console.log("Backgorund:\nEmail Text: ".concat(emailText));
+  console.log("Background: Starting check of scans");
   var foundRules = [];
   var wordsToHighlight = [];
-  console.log("Email Text: ".concat(emailText));
-  // console.log(`Email Link: ${emailLinks}`);
-
-  console.log("Background: Starting check of scans");
   try {
     var _loop = function _loop() {
       var rule = jsonFile[i];
@@ -132,7 +158,8 @@ function checkScan(jsonFile, scanResults) {
       var foundWords = [];
       var foundLinks = [];
       words.forEach(function (word) {
-        if (emailText.includes(word.toLowerCase()) || emailLinks.includes(word.toLowerCase())) {
+        var regularExpression = new RegExp("\\b".concat(word, "\\b"), "i");
+        if (regularExpression.test(emailText) || regularExpression.test(emailLinks)) {
           foundWords.push(word);
           wordsToHighlight.push(word);
         }
@@ -159,15 +186,23 @@ function checkScan(jsonFile, scanResults) {
     for (var i = 0; i < jsonFile.length; i++) {
       _loop();
     }
-    console.log("Rules found: ".concat(foundRules[0].description));
-    console.log("Words that need to highlighted: ".concat(wordsToHighlight));
-    console.log("Check completed");
+    if (foundRules.length > 0) {
+      console.log("Background: Rules found: ".concat(foundRules[0].description));
+    } else {
+      console.log("Background: No rules found");
+    }
+    if (wordsToHighlight.length > 0) {
+      console.log("Background:  Words that need to be highlighted: ".concat(wordsToHighlight));
+    } else {
+      console.log("Background: Nothing to highlight");
+    }
+    console.log("Background: Check completed");
     return {
       rules: foundRules,
       toHighlight: wordsToHighlight
     };
   } catch (error) {
-    console.log("An error occured ".concat(error));
+    console.log("Background:  An error occured ".concat(error));
   }
 }
 /******/ })()
