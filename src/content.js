@@ -30,11 +30,17 @@ function emailOpenController(providedUrl) {
   //Temporal Solution
   //Checking for Big Email service
   if (
-    url.includes("mail.google.com") ||
+    url.includes("mail.google.com")
+    /*
+    #########################
+    Need to implement later
+    #########################
+    ||
     url.includes("outlook.office365.com") ||
     url.includes("outlook.live.com") ||
     url.includes("mail.yahoo.com") ||
     url.includes("icloud.com/mail/")
+    */
   ) {
     //If Present then make service found true
     emailServiceDetected = true;
@@ -45,21 +51,21 @@ function emailOpenController(providedUrl) {
   if (emailServiceDetected) {
     console.log("Content: Opened Email Service");
 
+    const regexGmail =
+      /https:\/\/mail\.google\.com\/mail\/u\/\d+\/?.*#inbox\/[a-zA-Z0-9]+/;
     //Checking for Gmail
-    if (
-      url.includes("mail.google.com/mail/u/0/") &&
-      url.match(/#inbox\/[a-zA-Z0-9]+/)
-    ) {
+    if (url.includes("mail.google.com/mail/u/") && regexGmail.test(url)) {
       emailOpenedCheck = true;
       console.log(`Gmail: Email opened`);
-      scanPage();
     }
     //Checking for Outlook
     /*
     ###############################
     Need to be fix below services
+    [Outlook, Yahoo, Apple]
     ###############################
     */
+    /*
     if (
       (url.includes("outlook.office365.com/mail/") ||
         url.includes("outlook.live.com/mail/")) &&
@@ -82,6 +88,7 @@ function emailOpenController(providedUrl) {
       emailOpenedCheck = true;
       console.log(`Apple: Email opened`);
     }
+      */
   }
 
   console.log(
