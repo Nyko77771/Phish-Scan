@@ -89,5 +89,5 @@ This is an open source development all types of contributions are welcome. If yo
 
 ## Contact
 
-:e_mail: unknown02.test@gmail.com
+:email: unknown02.test@gmail.com
 :link: @Nyko77771
