@@ -27382,7 +27382,7 @@ var MyComponents = function MyComponents() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "button",
     id: "btn2",
-    value: "Perform Analysis"
+    value: "Show Details"
     //onClick={performAnalysis}
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     id: "section8"

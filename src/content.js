@@ -225,13 +225,20 @@ function highlightResults(words) {
     return false;
   }
 
-  const tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];
+  const emailContainer = document.querySelector(".a3s");
 
+  if (!emailContainer) {
+    console.log(`Content: No email body found`);
+    return false;
+  }
+
+  const tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];
   console.log(`Content: starting highlight`);
+
   try {
     terms.forEach((term) => {
       tags.forEach((tag) => {
-        const elements = document.querySelectorAll(tag);
+        const elements = emailContainer.querySelectorAll(tag);
         elements.forEach((element) => {
           if (element.innerHTML.toLowerCase().includes(term.toLowerCase())) {
             const regularExpression = new RegExp(`\\b${term}\\b`, "gi");

@@ -206,12 +206,17 @@ function highlightResults(words) {
     alert("Nothing to highlight!");
     return false;
   }
+  var emailContainer = document.querySelector(".a3s");
+  if (!emailContainer) {
+    console.log("Content: No email body found");
+    return false;
+  }
   var tags = ["h1", "h2", "h3", "h4", "p", "span", "div", "a"];
   console.log("Content: starting highlight");
   try {
     terms.forEach(function (term) {
       tags.forEach(function (tag) {
-        var elements = document.querySelectorAll(tag);
+        var elements = emailContainer.querySelectorAll(tag);
         elements.forEach(function (element) {
           if (element.innerHTML.toLowerCase().includes(term.toLowerCase())) {
             var regularExpression = new RegExp("\\b".concat(term, "\\b"), "gi");

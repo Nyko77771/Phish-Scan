@@ -101,7 +101,7 @@ const MyComponents = () => {
             <input
               type="button"
               id="btn2"
-              value="Perform Analysis"
+              value="Show Details"
               //onClick={performAnalysis}
             />
           </div>
