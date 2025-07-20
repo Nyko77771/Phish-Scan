@@ -151,13 +151,15 @@ const MyComponents = () => {
                 <>
                   <h3>Found Phishing Rules!</h3>
                   <table>
-                    {displayRules.map((rule, i) => (
-                      <tr key={i}>
-                        <th>{rule.description}:</th>
-                        <td>{rule.words.join(", ")}</td>
-                        <td>{rule.link}</td>
-                      </tr>
-                    ))}
+                    <tbody>
+                      {displayRules.map((rule, i) => (
+                        <tr key={i}>
+                          <th>{rule.description}:</th>
+                          <td>{rule.words.join(", ")}</td>
+                          <td>{rule.link}</td>
+                        </tr>
+                      ))}
+                    </tbody>
                   </table>
                 </>
               ) : (
