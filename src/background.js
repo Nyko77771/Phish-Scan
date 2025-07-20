@@ -78,21 +78,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
           // Performing the check of the scan
           const results = checkScan(jsonRules, contentResponse);
+          //Sending another for highlighting words
           chrome.tabs.sendMessage(
             id,
             { action: "highlightPage", words: results.toHighlight, tabId: id },
             async (contentResponse2) => {
+              //Checking for response presence and for false value
               if (!contentResponse2 || contentResponse2 === false) {
                 console.log(`Background: Highlight failed`);
+                //Sending response if false or no response from content.js
                 sendResponse({ completed: false });
               }
 
+              //Sending Response if true
               console.log(`Background: Highlighted Response Received`);
               sendResponse({ completed: true, rules: results.rules });
             }
           );
         } catch (error) {
-          console.log(`Unable to perform scan. Error: ${error}`);
+          console.log(`Background: Unable to perform scan. Error: ${error}`);
         }
       }
     );

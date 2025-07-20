@@ -117,10 +117,10 @@ body {
 }
 
 #btn2 {
-  width: 7.0em;
+  width: 7em;
   height: 1.4em;
   background-color: #fec89a;
-  border: 2px dashed #f77f00;
+  border: 2px solid #f77f00;
   font-size: 2em;
   font-weight: bold;
   cursor: pointer;

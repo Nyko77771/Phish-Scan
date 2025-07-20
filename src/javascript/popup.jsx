@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+//importing few modules from react and react-dom
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 
 // creating the html page components variable
@@ -11,6 +12,7 @@ const MyComponents = () => {
   const [emailOpened, setOpenState] = useState(false);
   const [documentScanned, setScanState] = useState(false);
   const [displayRules, setRules] = useState(null);
+  const [showAlert, setAlert] = useState(false);
 
   //using useEffect for html page update based on status received from the backgrounds
   useEffect(() => {
@@ -25,6 +27,7 @@ const MyComponents = () => {
     });
   }, []);
 
+  //Using effect to check the id presence
   useEffect(() => {
     console.log(`Pop-up: Checking tabId`);
     console.log(`Pop-up: Tab ID: ${tabId}`);
@@ -33,11 +36,13 @@ const MyComponents = () => {
       return;
     }
 
+    //Checking if id is a number
     if (isNaN(tabId)) {
       console.log(`Pop-up: TabId is not a number`);
       return;
     }
 
+    //Getting status of service and email
     chrome.runtime.sendMessage(
       {
         message: "tabStatus",
@@ -52,63 +57,109 @@ const MyComponents = () => {
     );
   }, [tabId]);
 
+  //Checking the returned results
   console.log(`Pop-up: Service Detected Result: ${emailService}`);
   console.log(`Pop-up: Email Opened: ${emailOpened}`);
 
+  //Function for initialising the scan
   const startScan = () => {
     console.log("Popup: Starting Scan");
+    //Sending message to background to start the process
     chrome.runtime.sendMessage({ action: "startScan", tabId }, (response) => {
+      //Checking the response received
       if (response.completed) {
         console.log("Pop-up: Scan has been completed");
         setScanState(response.completed);
+        //Checking for rule presence
+        if (response.rules && response.rules.length > 0) {
+          console.log(`Pop-up: Rules are present`);
+          setRules(response.rules);
+        } else {
+          console.log(`Pop-up: No rules present`);
+        }
       }
     });
   };
 
+  // Function for creating custom alert message
+  const createAlert = () => {
+    console.log(`Pop-up: Creating the alert message`);
+    setAlert(true);
+  };
+
+  const hideAlert = () => {
+    console.log(`Pop-up: Removing the alert message`);
+    setAlert(false);
+  };
+
+  //Returning custom html page
   return (
-    <div className="mainContainer">
-      <div id="section1">
-        <img src="logo.png" alt="logo" />
-        <h1 id="mainTitle">Phishing Scanner</h1>
-      </div>
-      <div id="section2"></div>
-      <div id="section3">
-        <span className="line1"></span>
-        {emailService ? (
-          <>
-            <h1 id="notice1">Email Service:</h1>
-            <h2 id="notice2">Detected</h2>
-          </>
-        ) : (
-          <h1 id="notice1">No Email Detected</h1>
-        )}
-      </div>
-      <div id="section4"></div>
-      <div id="section5">
-        {emailOpened && (
-          <input
-            type="button"
-            id="btn1"
-            value="Scan Email!"
-            onClick={startScan}
-          ></input>
-        )}
-      </div>
-      {documentScanned && (
-        <>
-          <div id="section6"></div>
-          <div id="section7">
+    <>
+      <div className="mainContainer">
+        <div id="section1">
+          <img src="logo.png" alt="logo" />
+          <h1 id="mainTitle">Phishing Scanner</h1>
+        </div>
+        <div id="section2"></div>
+        <div id="section3">
+          <span className="line1"></span>
+          {emailService ? (
+            <>
+              <h1 id="notice1">Email Service:</h1>
+              <h2 id="notice2">Detected</h2>
+            </>
+          ) : (
+            <h1 id="notice1">No Email Detected</h1>
+          )}
+        </div>
+        <div id="section4"></div>
+        <div id="section5">
+          {emailOpened && (
             <input
               type="button"
-              id="btn2"
-              value="Show Details"
-              //onClick={performAnalysis}
-            />
+              id="btn1"
+              value="Scan Email!"
+              onClick={startScan}
+            ></input>
+          )}
+        </div>
+        {documentScanned && (
+          <>
+            <div id="section6"></div>
+            <div id="section7">
+              <input
+                type="button"
+                id="btn2"
+                value="Show Details"
+                onClick={createAlert}
+              />
+            </div>
+            <div id="section8"></div>
+          </>
+        )}
+      </div>
+      //Alert box
+      {showAlert && (
+        <>
+          <div className="alertBox">
+            <div className="alertItems">
+              {displayRules != null && displayRules.length > 0 ? (
+                <>
+                  <h3>Found Phishing Rules!</h3>
+                </>
+              ) : (
+                <>
+                  <h3>No Rules Detected!</h3>
+                </>
+              )}
+              <button className="btnA1" onClick={hideAlert}>
+                Close
+              </button>
+            </div>
           </div>
-          <div id="section8"></div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
