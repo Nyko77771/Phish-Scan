@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Phishing Scanner",
+  "description": "Phishing email detector that uses static JSON rules and ML model",
+  "version": "1.0.1",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Phish Scan",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "tabs", "activeTab"],
+  "host_permissions": ["<all_urls>"]
+}

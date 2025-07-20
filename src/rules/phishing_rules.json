@@ -1,0 +1,88 @@
+{
+  "phishing_detection_rules": [
+    {
+      "id": "001",
+      "description": "Urgent Messaging",
+      "action": "flag",
+      "words": [
+        "urgent",
+        "immediately",
+        "final",
+        "limited time",
+        "only a few hours",
+        "immediate action",
+        "now",
+        "instantly"
+      ]
+    },
+    {
+      "id": "002",
+      "description": "Common Phishing Phrases",
+      "action": "flag",
+      "words": [
+        "verify your account",
+        "click below",
+        "login to continue",
+        "update your information",
+        "you have won",
+        "congratulations",
+        "act now",
+        "security alert"
+      ]
+    },
+    {
+      "id": "003",
+      "description": "Alert Triggers",
+      "action": "flag",
+      "words": [
+        "failure",
+        "notice",
+        "account",
+        "locked",
+        "suspended",
+        "pending",
+        "verification",
+        "security",
+        "warning",
+        "action",
+        "required"
+      ]
+    },
+    {
+      "id": "004",
+      "description": "Financial Terms",
+      "action": "flag",
+      "words": [
+        "amount",
+        "due",
+        "balance",
+        "tax",
+        "refund",
+        "payment",
+        "invoice",
+        "attached",
+        "bank",
+        "account",
+        "wire",
+        "transfer"
+      ]
+    },
+    {
+      "id": "005",
+      "description": "Threatening Language",
+      "action": "flag",
+      "words": [
+        "suspicious",
+        "activity",
+        "security",
+        "breach",
+        "legal",
+        "final",
+        "notice",
+        "report",
+        "authority",
+        "exploit"
+      ]
+    }
+  ]
+}
