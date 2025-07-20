@@ -1,8 +1,8 @@
 ![Extension Logo Screenshot](src/assets/icon.png)
 
-<center>
+
 # :hook: Phishing Detector Scan
-</center>
+
 
 ## By Nyk077771
 
