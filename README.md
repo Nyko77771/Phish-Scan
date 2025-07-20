@@ -1,4 +1,4 @@
-![Extension Logo Screenshot](src/assets/logo.png)
+![Extension Logo Screenshot](src/assets/icon.png) Phishing Scanner
 
 # :hook: Phishing Detector Scan
 
