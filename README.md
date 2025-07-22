@@ -69,7 +69,7 @@ yarn test
 
 **Please Note Jest would need to be installed**
 
-###To install Jest:
+### To install Jest:
 
 ```bash
 yarn add --dev jest
