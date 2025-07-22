@@ -64,7 +64,15 @@ yarn dev
 Currently tested with Jest Framework. To run:
 
 ```bash
-yarn jest
+yarn test
+```
+
+**Please Note Jest would need to be installed**
+
+###To install Jest:
+
+```bash
+yarn add --dev jest
 ```
 
 ## Future Development Roadmap:
